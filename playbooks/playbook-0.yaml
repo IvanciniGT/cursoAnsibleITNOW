@@ -1,0 +1,39 @@
+# playbook para lo que sea
+-   
+    hosts: all
+    # En que entornos se debe ejecutar este playbook de entre los del inventario
+    # Buena práctica es poner all.
+    # Al ejecutar un playbook, podemos informar a ansible que en vez de usar los host definidos aqui, 
+    # queremos suministrarlos dinamicamente 
+    # DA LUGAR A UN PLAYBOOK MAS FLEXIBLE.
+
+    gather_facts: True
+    # Por defecto esta activado: True
+    # La ponemos siempre... que quede patente, expicito.
+    # Esta operación tarda mucho.
+    # Esto permite traer información del remoto: HARDWARE, RED, SO
+    # Los datos que se recopilan a traves de la operación gather facts, están disponibles en la variable "ansible_facts"
+    #                                                                                                     ^^^^^^^^^^^^^^^
+
+    tasks:
+        - # Para cada tarea:
+            name: Tarea 1
+            # Modulo que la ejecuta
+            debug:
+                msg: "Soy la primera tarea del primer playbook"
+        - # Para cada tarea:
+            name: Tarea 2
+            # Modulo que la ejecuta
+            debug:
+                var: ansible_facts
+        - # Para cada tarea:
+            name: Tarea 3
+            # Modulo que la ejecuta
+            debug:
+                var: ansible_facts.distribution
+
+        - # Para cada tarea:
+            name: Tarea 4
+            # Modulo que la ejecuta
+            debug:
+                var: ansible_facts.dns.nameservers

@@ -1,0 +1,194 @@
+# Plantilla de playbook  de ansible
+# $ ansible-playbook -i FICHERO_INVENTARIO FICHERO_PLAYBOOK
+-   
+    hosts: all
+    # En que entornos se debe ejecutar este playbook de entre los del inventario
+    # Buena práctica es poner all.
+    # Al ejecutar un playbook, podemos informar a ansible que en vez de usar los host definidos aqui, 
+    # queremos suministrarlos dinamicamente 
+    # DA LUGAR A UN PLAYBOOK MAS FLEXIBLE.
+    # Valores:
+        # all
+        # <hostname>
+        # server1:server2
+        # <groupname>
+        # webservers:!produccion        Todos los entornos del grupo webservers pero que no sean del grupo produccion
+        # webservers:&produccion        Todos los entornos del grupo webservers pero que sean del grupo produccion
+    
+    # Orden de los entornos en los que quiero ir ejecutando el playbook
+    order: inventory # reverse_inventory | sorted | reversed_sorted | shuffle
+
+    gather_facts: True
+    # Por defecto esta activado: True
+    # La ponemos siempre... que quede patente, expicito.
+    # Esta operación tarda mucho.
+    # Esto permite traer información del remoto: HARDWARE, RED, SO
+    # Los datos que se recopilan a traves de la operación gather facts, están disponibles en la variable "ansible_facts"
+    
+    # Aqui puedo definir variables que ir utilizando en los tasks
+    # Y asignarles un valor por defecto... siempre se puede cambiar este valor en tiempo de ejecución mediante un parámetro
+    vars:
+        # Variables simples:
+        puerto: 8080
+        # Variables más complejas
+        apache:
+            puertos: 
+                - 80
+                - 443
+            ruta_home: /var/apache/home
+            ssl:
+                enabled: True
+                private_key_file: RUTA
+                cert_dile: RUTA2
+                
+    # Definición de tareas:
+    #pretasks:
+    tasks:
+    #posttasks:
+        - # Para cada tarea:
+            name: 1- Mostrar mensaje con variable
+            # Modulo que la ejecuta
+            debug:
+                msg: "La máquina donde se está ejecutando el playbook tiene SO: {{ ansible_facts.distribution | upper }}" # Podemos utilizar sintaxis JINJA: TEMPLATING
+                    #^ !unsafe Le indica a Ansible que aquello no debe ser procesado por JINJA
+
+        -   name: 2- Mostrar mensaje sin procesar
+            debug:
+                msg: !unsafe "La máquina donde se está ejecutando el playbook tiene SO: {{ ansible_facts.distribution | lower }}"
+
+        -   name: 3- Usar variables jerárquicas y propias
+            debug:
+                msg: "Activar ssl en apache? {{ apache.ssl.enabled }}"
+                
+        -   name: 4- Sobreescribir variables
+            debug:
+                msg: "Activar ssl en apache? {{ apache.ssl.enabled }}"
+            vars: 
+                apache:
+                    ssl:
+                        enabled: False
+
+        -   name: 3b- La variable original no se ha modificado
+            debug:
+                msg: "Activar ssl en apache? {{ apache.ssl.enabled }}"
+                
+        -   name: 5- Acceder a una posicion de lista concreta de una variable
+            debug:
+                msg: "Puerto seguro del apache: {{ apache.puertos[1] }}" # Se empieza a contar en el 0
+        
+        -   name: 6- SO y versión de mi máquina
+            debug:
+                msg: >-
+                    SO: {{ ansible_facts.distribution | upper }}
+                    Version: {{ ansible_facts.distribution_version }}
+                    
+#####################################################################################                    
+#           Tareas condicionales
+#####################################################################################                    
+        -   name: "7- Ejecutar solamente si se cumple una condición: UBUNTU"
+            debug:
+                msg: "Soy Ubuntu !!!!!"
+            when: ansible_facts.distribution == 'Ubuntu'   # El equivalente a un if tradicional
+        
+        -   name: "8- Ejecutar solamente si se cumple una condición: REDHAT"
+            debug:
+                msg: "Soy Redhat !!!!!"
+            when: ansible_facts.distribution == 'Redhat'   # El equivalente a un if tradicional
+
+        -   name: "9- Anidación de condiciones"
+            debug:
+                msg: "Soy Ubuntu 18.04 !!!!!"
+            when: ansible_facts.distribution == 'Ubuntu' and ansible_facts.distribution_version == '18.04'  
+                                                        # igual podemos poner la palabra OR
+                # Esto sería equivalente al AND
+        -   name: "10- Equivalente AND"
+            debug:
+                msg: "Soy Ubuntu 18.04 !!!!!"
+            when:
+                - ansible_facts.distribution == 'Ubuntu' 
+                - ansible_facts.distribution_version == '18.05'   
+                
+                # Otros operadores: == != > < >= <=          and     or    not
+
+##########################################################################            
+#.      Tareas condicionadas a otras tareas y a su estado
+##########################################################################            
+        -   name: "11- Tarea que pide la ejecución de otra tarea... sin exito"
+            debug:
+                msg: "Hago algo por aquí...., después quiero hacer OTRA TAREA"
+            notify: OTRA TAREA
+                # Solo se notifica/solicita la ejecución de la tarea cuando ESTA TAREA (la que estoy ejecutando ahora mismo)
+                # HA PROVOCADO CAMBIOS EN EL ENTORNO REMOTO.
+                # En este caso, que solo sacamos un mensaje por pantalla no se notifica/solicita la ejecución
+                
+        -   name: "12- Tarea que pide la ejecución de otra tarea... ahora si que si"
+            debug:
+                msg: "Hago algo por aquí...., después quiero hacer OTRA TAREA"
+                # Me permite especificar cuando ANSIBLE debe entender que esta tarea ha provocado un cambio
+                          # Ahí dentro pondría una expresión lógica
+            changed_when: True
+            notify: OTRA TAREA
+                # Solo se notifica/solicita la ejecución de la tarea cuando ESTA TAREA (la que estoy ejecutando ahora mismo)
+                # HA PROVOCADO CAMBIOS EN EL ENTORNO REMOTO.
+                # En este caso, si se va a solicitar la ejecución de la OTRA TAREA... hemos forzado que se marque 
+                # Que esta tarea ha provocado un cambio
+                
+        -   name: "13- Dummy task"
+            debug:
+                msg: "No hago nada"
+
+        -   name: "14- Tarea de nuevo solicita la ejecución de OTRA TAREA"
+            debug:
+                msg: "Hago algo por aquí de nuevo...., después quiero hacer OTRA TAREA de nuevo"
+            changed_when: True
+            notify: MIEVENTO
+
+        -   name: "15- Tarea que ejecuta un script de la shell"
+            shell: |
+                uname
+                if [ ! -f /home/ubuntu/environment/prueba.log ]; then
+                    echo HOLA > /home/ubuntu/environment/prueba.log
+                    exit 127
+                fi
+                exit 0
+            register: resultado_tarea15
+                # resultado_tarea15 is failed
+                # resultado_tarea15 is succeded
+                # resultado_tarea15 is skipped
+                # resultado_tarea15 is changed
+            # Esto en realidad habria tenido mas sentido resolverlo a través del stdout
+            changed_when: resultado_tarea15.rc == 127
+            failed_when: resultado_tarea15.rc != 127 and resultado_tarea15.rc != 0
+
+        -   name: "16- Hago uso de la informacion de la tarea anterior"
+            debug:
+                msg: "Salida: {{ resultado_tarea15.stdout }} - {{ resultado_tarea15.rc }} "
+            when: resultado_tarea15 is changed
+
+
+
+
+    # Son tareas que se ejecután como mucho 1 vez, siempre que hayan sido "notificada"/solicitada su ejecución
+    #                                       ^ aunque se solicite su ejecución muchas veces
+    # Se ejecutan después del listado de tareas en el que hayan sido solicitadas:
+    #   pre_tasks
+        # Ahora se ejecutarían los handlers disparados en pre_tasks
+    #   tasks
+        # Ahora se ejecutarían los handlers disparados en tasks
+    #   post_tasks
+        # Ahora se ejecutarían los handlers disparados en post_tasks
+    
+    handlers:
+        -   name: "OTRA TAREA"
+            debug:
+                msg: "Yo soy la OTRA TAREA... y haré lo que sea que me hubieran definido"
+
+        -   name: "OTRA TAREA MAS"
+            debug:
+                msg: "Yo soy la OTRA TAREA MAS... y haré lo que sea que me hubieran definido"
+            listen: MIEVENTO
+
+        -   name: "OTRA TAREA MAS MAS"
+            debug:
+                msg: "Yo soy la OTRA TAREA MAS MAS... y haré lo que sea que me hubieran definido"
+            listen: MIEVENTO

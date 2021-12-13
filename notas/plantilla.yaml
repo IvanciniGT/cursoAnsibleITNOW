@@ -1,0 +1,137 @@
+# Documento1
+... # Marca de fin de documento
+--- # Marca de inicio de documento
+# Documento2
+---
+# Documento3
+---
+# Documento4
+---
+# Documento5
+---
+# Un documento es un NODO
+---
+# Hay 2 tipos de nodos: escalares y colecciones
+---
+# Escalares: Valores simples/sencillos
+---
+# Numeros
+12
+---
+12.2
+---
+-.Inf
+---
+.nan
+---
+"Textos"
+---
+'Texto'
+---
+Texto
+---
+false # False  FALSE
+---
+TRUE
+---
+~ # Valor nulo, vacio
+---
+# Nodos de colección: Conjunto de nodos
+---
+# Listas: Conjunto ordenado de nodos. HEREDADA DE PYTHON
+- item 1
+- item 2
+- item 3
+- True
+- 34.65
+- ~
+- - Sublista Item 1
+  - Sublista Item 2
+-           - Sublista 2
+            - Subitem 2.2
+---
+# Existe una sintaxis alternativa para listas, HEREDADA de JSON
+[ "item 1", "item 2", "item 3"]
+---
+- item 1
+- item 2
+- item 3
+---
+!!str True
+---
+# Mapa: Conjunto desordenado de datos, que van identificados no por su posicion
+clave1: item 1
+clave2: item 2
+clave3: item 3
+---
+clave2: item 2
+clave3: item 3
+clave1: item 1
+---
+? clave2: True
+? clave3: item 3
+? clave1: 1
+? clave4: - item 1
+        - item 2
+        - item 3
+? clave5: 
+        subclave1: valor
+        subclave2: otro valor
+? - item 1
+  - item 2
+: Valor del nodo
+---
+# Listas desordenadas
+!!set
+? item 1
+? item 2
+? item 3
+---
+# Mapa ordenado
+!!omap
+- clave2: item 2
+- clave3: item 3
+- clave1: item 1
+---
+!!binary .....
+---
+
+
+t'ex"to 1
+
+linea 2
+
+
+---
+
+"\t'ex\"to 1\n\r\\
+linea 2"
+
+---
+
+'\t''ex"to 1
+linea 2'
+---
+# Sintaxis de textos en bloque:
+# Literal.   |
+|1+
+    Se interpreta tal cual
+    No se cambia ni una comilla " ' #
+    \r 
+    
+    # Aqui sigo
+      hola
+      
+      
+      
+      
+      
+# Folded.    >
+>
+    Se interpreta tal cual
+    No se cambia ni una comilla " ' #
+    \r 
+    
+    # Aqui sigo
+      hola
+      
