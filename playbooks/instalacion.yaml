@@ -1,0 +1,73 @@
+
+-   hosts: all
+    order: inventory
+    
+    gather_facts: True
+    
+    vars:
+        herramientas:
+            -   name: git
+                upgrade: true
+                repo: 
+                    url: ppa:git-core/ppa
+                    key: ~
+                
+            -   name: ansible
+                upgrade: false
+
+            -   name: terraform
+                upgrade: true
+                repo: 
+                    url: deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main
+                    key: https://apt.releases.hashicorp.com/gpg
+            
+    tasks:
+        - name: Instalar Clave
+          apt_key:
+            url: "{{ item.repo.key }}"
+            state: present
+          when: item["repo"] is defined and item.repo is not none and item.repo.key is defined and item.repo.key is not none
+          become: True    
+        
+          loop: "{{ herramientas }}"
+          
+        - name: Dar de alta repos
+          block:
+            - name: Generar URL repo
+              shell: 'echo "{{ item.repo.url }}"'
+              when: item["repo"] is defined and item.repo is not none and item.repo.url is defined and item.repo.url is not none
+              register: repository_url   # Tendremos un dato que se llama results 
+            
+              loop: "{{ herramientas }}"
+            
+            - name: Mostrar URLS
+              debug: 
+                msg: "{{ repository_url }}"
+                verbosity: 3
+                
+            - name: Instalar Repo
+              apt_repository:
+                repo: "{{ item.stdout | trim }}"
+                state: present
+                filename: "{{ item.item.name }}"
+              become: True    
+              when: item.skipped is not defined or not item.skipped
+            
+              loop: "{{ repository_url.results }}"
+#        - name: Instalar Herramientas
+#          apt:
+#            name: "{{ item }}"
+#            state: present
+#          loop: "{{ herramientas }}"
+#          become: True # Ponerse como superusuario
+#          become_user: root
+
+# Tener cuidado con el SO
+
+# Que pasa si nunca se ha ejecutado en la maquina un apt update.... esto falla
+
+# Que version se esta instalando: La ultima del repo que use?
+    # Seguro? Si ya tengo una de esta herramientas instaladas... se actualiza?
+    # Para cada herramenta:
+        # Definir si quiero que se actualice a la ultima version
+        # Opcionalmente permitir dar de alta repo + clave del repo

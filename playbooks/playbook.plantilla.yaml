@@ -133,6 +133,8 @@
                 # En este caso, si se va a solicitar la ejecución de la OTRA TAREA... hemos forzado que se marque 
                 # Que esta tarea ha provocado un cambio
                 
+        -   meta: flush_handlers # Fuerza que los handlers que se hayan solicitado se ejecuten en este punto
+        
         -   name: "13- Dummy task"
             debug:
                 msg: "No hago nada"
@@ -166,7 +168,112 @@
             when: resultado_tarea15 is changed
 
 
+        -   name: "17- Tarea que ejecuta un script de la shell... mejorada"
+            shell: |
+                uname
+                if [ ! -f /tmp/prueba2.log ]; then
+                    echo CAMBIO!!!
+                    echo HOLA > /tmp/prueba2.log
+                fi
+            register: resultado_tarea17
+            #changed_when: "'CAMBIO!!!' in resultado_tarea17.stdout"
+            #                                                 ^            $
+            #changed_when: "resultado_tarea17.stdout is match('.*CAMBIO!!!.*',multiline=True)"
+            # TODO REVISAR
+            changed_when: "resultado_tarea17.stdout is search('CAMBIO!!!')"
+            #failed_when: resultado_tarea17.rc != 2 and resultado_tarea17.rc != 0
+            ignore_errors: True
+            
+        -   name: "18- Mostrar stdout"
+            debug:
+                msg: "{{ resultado_tarea17.stdout }}"
 
+        -   name: "19- Dummy task"
+            debug:
+                msg: "No hago nada"
+            when: resultado_tarea17 is failed
+
+##########################################################################            
+#.      Tareas condicionadas en tiempo de ejecución
+##########################################################################       
+        -   name: "19a- Dummy task de tipo INSTALACION"
+            debug:
+                msg: "No hago nada"
+            tags:
+                - instalacion
+                - configuracion
+    # $ ansible-playbook -i INVENTORY_FILE PLAYBOOK_FILE --tags "instalacion"
+
+
+##############################################################################
+# TRABAJO CON BLOQUES
+##############################################################################
+
+        -   name: "20- BLOQUE 1 de tareas"
+            block:
+            -   name: "20a- Tarea 1 del bloque"
+                shell: |
+                    exit 1
+    
+            -   name: "20b- Tarea 2 del bloque"
+                debug:
+                    msg: "Tarea 2 del bloque"
+            # when:
+            # vars:
+            ignore_errors: True # Esto se aplica a CADA UNA de las tareas de dentro
+
+        -   name: "21- Tarea intermedia"
+            debug:
+                msg: "Tarea intermedia"
+
+        -   name: "22- BLOQUE 2 de tareas"   # crear el servicio ssh
+            block:
+                -   name: "22a- Tarea 2 del bloque"
+                    shell: |
+                        exit 1
+                    register: resultadotarea22a
+
+                -   name: "22b- Tarea 1 del bloque"
+                    shell: |
+                        exit 1
+                    register: resultadotarea22b
+        
+            rescue:
+                -   name: "TAREA RESCUE"
+                    debug:
+                        msg: "Tarea RESCUE"
+                    when: resultadotarea22b is defined and resultadotarea22b is failed
+                                            # is defined
+                                            # is undefined
+            always:   # Levantar el servicio de ssh
+                -   name: "TAREA ALWAYS"
+                    debug:
+                        msg: "Tarea ALWAYS"
+            
+        -   name: "23- Tarea intermedia"
+            debug:
+                msg: "Tarea intermedia"
+
+
+
+##############################################################################
+# BLUCLES
+##############################################################################
+
+        -   name: "24- Tarea en bucle"
+            debug: 
+                msg: "IP: {{ item }}" # esa es la variable por defecto con la que referirme a cada item que estoy iterando
+            loop: "{{  ansible_facts.all_ipv4_addresses }}"
+
+        -   name: "24- Tarea en bucle"
+            debug: 
+                msg: "IP: {{ numero_ip }} {{ item }}" # esa es la variable por defecto con la que referirme a cada item que estoy iterando
+            when: numero_ip % 2 == 1 # Elementos impares, ya que contamos desde 0
+            #Los when se aplican para cada iteracion
+            
+            loop: "{{  ansible_facts.all_ipv4_addresses }}"
+            loop_control:
+                index_var: numero_ip
 
     # Son tareas que se ejecután como mucho 1 vez, siempre que hayan sido "notificada"/solicitada su ejecución
     #                                       ^ aunque se solicite su ejecución muchas veces

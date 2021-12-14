@@ -34,6 +34,32 @@ false # False  FALSE
 ---
 TRUE
 ---
+# En la version 1.1 de YAML, se admitían los valores lógicos:
+Yes
+yes
+YES
+Y
+y
+On
+ON
+on
+
+NO
+no
+No
+off
+Off
+OFF
+n
+N
+# En la versión 1.2 de YAML solo se admite :
+True # TRUE true
+False # FALSE false
+
+
+
+
+---
 ~ # Valor nulo, vacio
 ---
 # Nodos de colección: Conjunto de nodos
