@@ -1,0 +1,15 @@
+herramientas:
+    -   name: git
+        testCommand: git --version
+        upgrade: true
+        repo: 
+            url: ppa:git-core/ppa
+            key: ~
+        
+    -   name: ansible
+        upgrade: false
+
+    -   name: terraform
+        repo: 
+            url: deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main
+            key: https://apt.releases.hashicorp.com/gpg

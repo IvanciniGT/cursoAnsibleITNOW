@@ -1,0 +1,58 @@
+
+- name: Comprobar si tengo apt
+  shell: apt --version
+  failed_when: False
+  changed_when: False
+  register: apt_disponible
+  
+- name: Trabajando en ubuntu/debian o derivados
+  #when: ansible_facts.distribution == 'Ubuntu' or ansible_facts.distribution == 'Debian'
+  #when: ansible_facts.distribution_file_variety == 'Debian'
+  when: apt_disponible.rc == 0
+  tags:
+    - instalar
+  block:
+      
+    - name: Instalar Clave
+      apt_key:
+        url: "{{ item.repo.key }}"
+        state: present
+      when: item["repo"] is defined and item.repo is not none and item.repo.key is defined and item.repo.key is not none
+      become: True    
+    
+      loop: "{{ herramientas }}"
+      
+    - name: Dar de alta repos
+      block:
+        - name: Generar URL repo
+          shell: 'echo "{{ item.repo.url }}"'
+          when: item["repo"] is defined and item.repo is not none and item.repo.url is defined and item.repo.url is not none
+          register: repository_url   # Tendremos un dato que se llama results 
+        
+          loop: "{{ herramientas }}"
+        
+        - name: Mostrar URLS
+          debug: 
+            msg: "{{ repository_url }}"
+            verbosity: 3
+            
+        - name: Instalar Repo
+          apt_repository:
+            repo: "{{ item.stdout | trim }}"
+            state: present
+            filename: "{{ item.item.name }}"
+          become: True    
+          when: item.skipped is not defined or not item.skipped
+        
+          loop: "{{ repository_url.results }}"
+
+    - name: Instalar Herramientas
+      apt:
+        name: "{{ item.name }}"
+        # Sintaxis IF en JINJA
+        # {% if CONDICION %}VALOR SI SE CUMPLE{% else %}VALOR SI NO SE CUMPLE{% endif %}
+        state: "{% if item.upgrade | default(False) %}latest{% else %}present{% endif %}"
+        update_cache: True
+      loop: "{{ herramientas }}"
+      become: True # Ponerse como superusuario
+      become_user: root

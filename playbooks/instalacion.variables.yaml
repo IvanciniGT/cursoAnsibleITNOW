@@ -1,0 +1,21 @@
+
+# Si no me pasan fichero de variables,
+# Buscar en automatico un fichero denominado *.vars.yaml
+# Lo podeis importat con el modulo: include_vars
+- name: Cargar herramientas de fichero dependiendo de la plataforma
+  include_vars:
+    dir: ./
+    files_matching: "{{ ansible_facts.distribution }}.vars.yaml"
+  when: herramientas | length == 0
+  tags:
+    - instalacion
+    - test
+    
+- name: Cargar herramientas de fichero generico
+  include_vars:
+    dir: ./
+    files_matching: .vars.yaml
+  when: herramientas | length == 0
+  tags:
+    - instalacion
+    - test

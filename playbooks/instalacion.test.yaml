@@ -1,0 +1,7 @@
+
+- name: Comprobar si tengo todo instalado correctamente
+  shell: "{% if item.testCommand | default(none) %}{{ item.testCommand }}{% else %}{{ item.name }} --version{% endif %}"
+  changed_when: False
+  loop: "{{ herramientas }}"
+  tags:
+    - test
