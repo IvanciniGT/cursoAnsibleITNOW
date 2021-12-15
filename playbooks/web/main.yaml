@@ -1,0 +1,26 @@
+# ansible-playbook \
+#    -i inventarios/inventario-0.ini \
+#    playbooks/instalacion.yaml \
+#    --tags test \
+#    --extra-vars '@playbooks/instalacion.vars.yaml'
+
+
+-   hosts: all
+    order: inventory
+    
+    gather_facts: True
+    
+    vars:
+        vars_dir: ./vars
+        herramientas: [] 
+        nginx:
+            port: 80
+            serverName: *
+            webPath: /www
+        
+    pre_tasks:
+        -   include_tasks: tasks/instalaciones.yaml
+    tasks:
+        -   include_tasks: tasks/configuracion.yaml
+    post_tasks:
+        -   include_tasks: tasks/test.yaml

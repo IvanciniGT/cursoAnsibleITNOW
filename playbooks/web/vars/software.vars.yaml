@@ -1,0 +1,14 @@
+herramientas:
+    -   name: git
+        testCommand: git --version
+        upgrade: true
+        repo: 
+            url: ppa:git-core/ppa
+            key: ~
+        
+    -   name: curl
+        upgrade: false
+
+    -   name: nginx
+        upgrade: false
+        testCommand: nginx -h

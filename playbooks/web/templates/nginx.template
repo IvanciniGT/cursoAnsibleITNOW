@@ -1,0 +1,7 @@
+server{
+    listen          {{ nginx.port }};
+    server_name     {{ nginx.serverName }};
+    root            {{ nginx.webPath }};
+    index           index.html;
+}
+# /etc/nginx/conf.d

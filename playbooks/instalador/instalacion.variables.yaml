@@ -4,7 +4,7 @@
 # Lo podeis importat con el modulo: include_vars
 - name: Cargar herramientas de fichero dependiendo de la plataforma
   include_vars:
-    dir: ./
+    dir: "{{ vars_dir | default('./') }}"
     files_matching: "{{ ansible_facts.distribution }}.vars.yaml"
   when: herramientas | length == 0
   tags:
@@ -13,7 +13,7 @@
     
 - name: Cargar herramientas de fichero generico
   include_vars:
-    dir: ./
+    dir: "{{ vars_dir | default('./') }}"
     files_matching: .vars.yaml
   when: herramientas | length == 0
   tags:

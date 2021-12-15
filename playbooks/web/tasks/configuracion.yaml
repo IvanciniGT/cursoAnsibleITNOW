@@ -1,0 +1,7 @@
+- name: Buscar fichero de variables por defecto
+- name: Fichero de configuracion de nginx
+- name: Cargar la pagina web
+- name: Reiniciar el servidor de nginx
+- name: Habilitar nginx al arranque de la maquina
+- name: Firewall...ufw
+

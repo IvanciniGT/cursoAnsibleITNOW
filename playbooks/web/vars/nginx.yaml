@@ -1,0 +1,4 @@
+nginx:
+    port: 90
+    serverName: localhost
+    webPath: /www

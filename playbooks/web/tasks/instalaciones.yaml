@@ -1,0 +1,4 @@
+-   include_tasks: ../../instalador/instalacion.variables.yaml
+-   include_tasks: ../../instalador/instalacion.debian.yaml
+-   include_tasks: ../../instalador/instalacion.test.yaml
+    
