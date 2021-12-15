@@ -31,9 +31,24 @@
         name: nginx
         enabled: True
 
-    - name: Firewall...ufw
-      ufw:
-        rule: allow
-        port: "{{ nginx.port }}"
-        proto: tcp
+    - name: Iniciar el servidor de nginx si no lo estaba ya
+      service:
+        name: nginx
+        state: started
+
+    - block:
+        - name: Comprobar si tengo instalado ufw
+          shell: "ufw --version"
+          changed_when: False
+          failed_when: False
+          register: ufw_disponible
+          
+        - name: Firewall...ufw
+          ufw:
+            rule: allow
+            port: "{{ nginx.port }}"
+            proto: tcp
+          when: ufw_disponible.rc == 0
+          
       when: ansible_facts.distribution == "Ubuntu"
+

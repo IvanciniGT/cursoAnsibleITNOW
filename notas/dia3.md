@@ -67,3 +67,12 @@ respuesta_prueba:
   path :
   redirected :
   status :
+----
+
+
+
+Playbook:
+  Instalaba y configuraba nginx, con nuestra web (La segunda ya no se hace)
+  Quiero que nginx este arrancado
+  Activar Firewall 
+  Si se habia hecho algun cambio en la configuracion lo reinicia
