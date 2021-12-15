@@ -1,0 +1,8 @@
+
+- name: Reiniciar el servidor de nginx
+  service:
+    name: nginx
+    state: restarted
+    #enabled: True
+  listen: CambioEnNginx
+  become: True

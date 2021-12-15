@@ -39,3 +39,8 @@
         -   include_tasks: tasks/test.yaml
             tags: 
                 - test
+    handlers:
+        -   import_tasks: handlers/configuracion.yaml
+            tags: 
+                - configuracion
+    

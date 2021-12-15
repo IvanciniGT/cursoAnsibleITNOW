@@ -28,7 +28,7 @@
           shell: 'echo "{{ item.repo.url }}"'
           when: item["repo"] is defined and item.repo is not none and item.repo.url is defined and item.repo.url is not none
           register: repository_url   # Tendremos un dato que se llama results 
-        
+          changed_when: False
           loop: "{{ herramientas }}"
         
         - name: Mostrar URLS
