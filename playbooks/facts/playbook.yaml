@@ -1,0 +1,64 @@
+#FACTS
+
+# Cuando activamos gather_facts, ansible trae los facts del entorno remoto
+# INCLUYENDO: los factus definidos en /etc/ansible/facts.d
+# Estos uñtimos facts se denominan CUSTOM FACTS
+
+# Dentro de esa carpeta tendremos fichero con extension .fact
+# Deben contener un JSON
+
+- hosts: localhost
+  gather_facts: True
+  
+  tasks:
+    - tags: 
+        - crear
+      block:
+        - name: Crear un fact
+          set_fact: uno="54"
+          
+        - name: Crear un custom fact
+          file: 
+            path: /etc/ansible/facts.d
+            state: directory
+          become: True
+
+        - name: Crear un custom fact
+          copy: 
+            src: mi_fact_1.fact
+            dest: /etc/ansible/facts.d/mi_custom_fact_nuevo.fact
+            mode: 0444
+          become: True
+
+  
+    - tags:
+        - mostrar
+      block:
+             
+        - name: Mostrar los Facts del entorno remoto
+          debug: 
+             msg: "{{ ansible_facts }}"
+             
+        - name: Mostrar los Facts del entorno remoto
+          debug: 
+             msg: "{{ ansible_local.mi_custom_fact_nuevo.valor }}"
+             
+        - name: Mostrar los custom Facts del entorno remoto
+          debug: 
+             msg: "{{ ansible_local }}"
+             
+        - name: Mostrar el valor del custom fact
+          debug: 
+             msg: "{{ ansible_local.mi_fact_1.valor }}"         
+             
+        - name: Mostrar el valorcito del custom fact2
+          debug: 
+             msg: "{{ ansible_local.mi_fact_2.valorcito }}"   
+    
+        - name: Mostrar el mivalor del custom fact dinamico
+          debug: 
+             msg: "{{ ansible_local.mi_fact_dinamico.mivalor }}" 
+             
+        - name: Mostrar el mivalor del custom fact dinamico2
+          debug: 
+             msg: "{{ ansible_local.mi_fact_dinamico2.mivalor }}"         
