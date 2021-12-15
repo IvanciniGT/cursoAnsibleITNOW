@@ -11,7 +11,7 @@
     gather_facts: True
     
     vars:
-        vars_dir: ./vars
+        vars_dir: "{{ playbook_dir }}/vars"
         herramientas: [] 
         nginx:
             port: 80
@@ -19,9 +19,23 @@
             webPath: /www
             configPath: /etc/nginx/conf.d/nginx.conf
         
+        test:
+            timeout: 5
+            delay: 2
+            connect_timeout: 2
+            urls:
+                - protocol: http
+                  url: /
+                  statusCode: 200
     pre_tasks:
         -   include_tasks: tasks/instalaciones.yaml
+            tags: 
+                - instalacion
     tasks:
         -   include_tasks: tasks/configuracion.yaml
+            tags: 
+                - configuracion
     post_tasks:
         -   include_tasks: tasks/test.yaml
+            tags: 
+                - test

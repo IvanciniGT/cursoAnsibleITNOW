@@ -3,34 +3,37 @@
       dir: ../vars/
       files_matching: nginx.yaml
       #when: nginx is undefined
-      tags:
-        - configuracion
-        
+
 - name: Fichero de configuracion de nginx
   template:
     dest: "{{ nginx.configPath }}"
     src: ../templates/nginx.template
     mode: 0444
+  become: True
     
 - name: Cargar la pagina web
   #shell: "git clone {{ nginx.webSource }} {{ nginx.webPath }}"
   git: 
     repo: "{{ nginx.webSource }}"
     dest: "{{ nginx.webPath }}"
+  become: True
 
 - name: Crujir la configuracion por defecto de nginx
   shell: "rm -f /etc/nginx/sites-enabled/default"
+  become: True
   
 - name: Reiniciar el servidor de nginx
   service:
     name: nginx
-    status: restarted
+    state: restarted
     #enabled: True
+  become: True
   
 - name: Habilitar nginx al arranque de la maquina
   service:
     name: nginx
     enabled: True
+  become: True
   
 - name: Firewall...ufw
   ufw:
@@ -38,3 +41,4 @@
     port: "{{ nginx.port }}"
     proto: tcp
   when: ansible_facts.distribution == "Ubuntu"
+  become: True

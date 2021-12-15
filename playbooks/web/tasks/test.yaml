@@ -11,11 +11,22 @@
   
 - name: Ver si contesta algo
   uri:
+         # http        :// localhost   : 80/index.html
     url: "{{ item.protocol }}://{{ nginx.serverName }}:{{ nginx.port }}{{ item.url }}"
     return_content: True
     status_code: "{{ item.statusCode }}"
     timeout: "{{ test.timeout }}"
   loop: "{{ test.urls }}"
-  register: respuesta_prueba
+  register: respuesta_prueba # results
  
-  
+- name: Mostrar Respuestas de la prueba
+  debug: 
+    msg: "{{ respuesta_prueba }}"
+    verbosity: 3
+     
+- name: Ver si ha contestado lo que debía
+  assert: 
+    that:
+        - item.item.contentPattern in item.content
+  when: item.item.contentPattern is defined and item.item.contentPattern is not none
+  loop: "{{ respuesta_prueba.results }}"
