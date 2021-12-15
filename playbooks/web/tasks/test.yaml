@@ -1,0 +1,21 @@
+# Pruebas unitarias:
+# Que pruebo una cosita !!!!!
+- name: Está el puerto corriendo?
+  wait_for:
+    host: "{{ nginx.serverName }}"
+    port: "{{ nginx.port }}"
+    state: started
+    timeout: "{{ test.timeout }}"
+    connect_timeout: "{{ test.connect_timeout }}"
+    delay: "{{ test.delay }}"
+  
+- name: Ver si contesta algo
+  uri:
+    url: "{{ item.protocol }}://{{ nginx.serverName }}:{{ nginx.port }}{{ item.url }}"
+    return_content: True
+    status_code: "{{ item.statusCode }}"
+    timeout: "{{ test.timeout }}"
+  loop: "{{ test.urls }}"
+  register: respuesta_prueba
+ 
+  

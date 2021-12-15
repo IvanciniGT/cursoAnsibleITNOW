@@ -15,8 +15,9 @@
         herramientas: [] 
         nginx:
             port: 80
-            serverName: *
+            serverName: "*"
             webPath: /www
+            configPath: /etc/nginx/conf.d/nginx.conf
         
     pre_tasks:
         -   include_tasks: tasks/instalaciones.yaml

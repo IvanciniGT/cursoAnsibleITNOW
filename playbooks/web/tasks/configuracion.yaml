@@ -1,7 +1,40 @@
 - name: Buscar fichero de variables por defecto
+  include_vars:
+      dir: ../vars/
+      files_matching: nginx.yaml
+      #when: nginx is undefined
+      tags:
+        - configuracion
+        
 - name: Fichero de configuracion de nginx
+  template:
+    dest: "{{ nginx.configPath }}"
+    src: ../templates/nginx.template
+    mode: 0444
+    
 - name: Cargar la pagina web
-- name: Reiniciar el servidor de nginx
-- name: Habilitar nginx al arranque de la maquina
-- name: Firewall...ufw
+  #shell: "git clone {{ nginx.webSource }} {{ nginx.webPath }}"
+  git: 
+    repo: "{{ nginx.webSource }}"
+    dest: "{{ nginx.webPath }}"
 
+- name: Crujir la configuracion por defecto de nginx
+  shell: "rm -f /etc/nginx/sites-enabled/default"
+  
+- name: Reiniciar el servidor de nginx
+  service:
+    name: nginx
+    status: restarted
+    #enabled: True
+  
+- name: Habilitar nginx al arranque de la maquina
+  service:
+    name: nginx
+    enabled: True
+  
+- name: Firewall...ufw
+  ufw:
+    rule: allow
+    port: "{{ nginx.port }}"
+    proto: tcp
+  when: ansible_facts.distribution == "Ubuntu"

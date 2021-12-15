@@ -1,4 +1,21 @@
+
 nginx:
     port: 90
     serverName: localhost
     webPath: /www
+    configPath: /etc/nginx/conf.d/nginx.conf
+    webSource: https://github.com/IvanciniGT/webEjemploAnsible
+    
+test:
+    timeout: 5
+    delay: 2
+    connect_timeout: 2
+    urls:
+        - protocol: http
+          url: /index.html
+          statusCode: 200
+          contentPattern: "Soy el fichero de la web"
+        - protocol: http
+          url: /
+          statusCode: 200
+          contentPattern: "Versión 2"
