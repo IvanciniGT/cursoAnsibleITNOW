@@ -28,7 +28,7 @@
                   url: /
                   statusCode: 200
     pre_tasks:
-        -   include_tasks: tasks/instalaciones.yaml # Variable INSTALAR= True False
+        -   include_tasks: tasks/pre_test.yaml # Variable INSTALAR= True False
             tags: 
                 - instalacion
     tasks:

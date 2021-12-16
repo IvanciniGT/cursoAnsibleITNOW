@@ -5,6 +5,8 @@ herramientas:
         repo: 
             url: ppa:git-core/ppa
             key: ~
+        #requiredVersion: 
+        #requiredVersionComparator:
         
     -   name: curl
         upgrade: false
@@ -12,3 +14,5 @@ herramientas:
     -   name: nginx
         upgrade: false
         testCommand: nginx -h
+        requiredVersion: 1.13.4
+        requiredVersionComparator: gt

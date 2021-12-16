@@ -4,8 +4,30 @@
       dir: ../vars/
       files_matching: nginx.yaml
 
-#- name: Mirar si hay un custom fact concreto que indicaría que este host ya ha recibido medicina
+    - name: Versiones actuales
+      debug:
+        msg: "{{ ansible_local.currentVersions }}"
+      failed_when: False
 
+    - name: Versiones actuales Python
+      debug:
+        msg: "{{ ansible_local.currentVersionsPy }}"
+      failed_when: False
+
+    - name: Versiones instaladas
+      debug:
+        msg: "{{ ansible_local.installedVersions }}"
+      failed_when: False
+      
+    - name: A realizar la instalación
+      set_fact: hay_cambios = False
+
+    - name: Comprobar que las versiones instaladas siguen intactas
+      set_fact: hay_cambios = True
+      loop: 
+        - "{{ansible_local.installedVersions | zip (ansible_local.currentVersions) | list}}"
+      when: item.0  != item.1
+      
 #- name: Comprobar si el valor es el que esperamos
 
 #- name: Version de la app
