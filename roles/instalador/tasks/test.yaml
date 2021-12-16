@@ -1,0 +1,29 @@
+
+- name: Comprobar si tengo todo instalado correctamente
+  shell: >
+    {% if item.value.version is defined
+          and item.value.version is not none
+          and item.value.version.command | default(none) 
+      %}{{ item.value.version.command }}{%
+    else 
+      %}{{ item.key }} --version{%
+    endif %}
+  changed_when: False
+  loop: "{{ instalador | dict2items }}"
+  tags:
+    - test
+
+- name: Comprobar si tengo todo instalado correctamente
+  shell: >
+    {% if item.value.version is defined
+          and item.value.version is not none
+          and item.value.version.command | default(none) 
+      %}{{ item.value.version.command }}{%
+    else 
+      %}{{ item.key }} --version{%
+    endif %}
+  changed_when: False
+  loop: "{{ instalador | dict2items }}"
+  tags:
+    - test
+    

@@ -1,2 +1,4 @@
 ---
-# tasks file for instalador
+-   include_tasks: variables.yaml
+-   include_tasks: debian.yaml
+-   include_tasks: test.yaml

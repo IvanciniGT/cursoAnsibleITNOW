@@ -1,0 +1,18 @@
+
+- name: Cargar herramientas de fichero dependiendo de la plataforma
+  include_vars:
+    dir: "{{ vars_dir | default('./') }}"
+    files_matching: "{{ ansible_facts.distribution }}.instalador.yaml"
+  when: instalador | length == 0
+  tags:
+    - instalacion
+    - test
+    
+- name: Cargar herramientas de fichero generico
+  include_vars:
+    dir: "{{ vars_dir | default('./') }}"
+    files_matching: .instalador.yaml
+  when: instalador | length == 0
+  tags:
+    - instalacion
+    - test
