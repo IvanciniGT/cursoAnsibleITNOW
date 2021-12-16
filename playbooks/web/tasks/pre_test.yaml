@@ -1,0 +1,15 @@
+
+- name: Buscar fichero de variables por defecto
+  include_vars:
+      dir: ../vars/
+      files_matching: nginx.yaml
+
+#- name: Mirar si hay un custom fact concreto que indicaría que este host ya ha recibido medicina
+
+#- name: Comprobar si el valor es el que esperamos
+
+#- name: Version de la app
+
+#- name: Version de nginx
+
+#- name: Aplicar los tests

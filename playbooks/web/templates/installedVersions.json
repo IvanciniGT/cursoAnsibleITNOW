@@ -1,0 +1,7 @@
+{
+    "versions": {
+        "web": "{{ webVersion.stdout }}",
+        "git": "{{ gitVersion.stdout | regex_search('[0-9]+.[0-9]+(.[0-9a-z]+)?') }}",
+        "nginx": "{{ nginxVersion.stdout | regex_search('[0-9]+.[0-9]+(.[0-9a-z]+)?') }}"
+    }
+}

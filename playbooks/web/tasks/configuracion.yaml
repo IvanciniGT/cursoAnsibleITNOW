@@ -1,9 +1,5 @@
 - become: True
   block:
-    - name: Buscar fichero de variables por defecto
-      include_vars:
-          dir: ../vars/
-          files_matching: nginx.yaml
           #when: nginx is undefined
     
     - name: Fichero de configuracion de nginx
