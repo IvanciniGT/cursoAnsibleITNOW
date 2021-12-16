@@ -3,7 +3,7 @@ import json
 import re
 from subprocess import run, PIPE
 
-RUTA={{ nginx.webPath }}
+RUTA="{{ nginx.webPath }}"
 
 def ejecutarComando(comando):
     resultado=run(comando, stdout=PIPE,stderr=PIPE)

@@ -1,0 +1,27 @@
+#dict2items
+---
+instalador: 
+    git:
+        version:
+            command: git --version
+        install:
+            upgrade: true
+            repo: 
+                url: ppa:git-core/ppa
+                key: ~
+
+    curl:
+        install:
+            upgrade: false
+        #version:
+        #    command: curl --version
+
+    nginx:
+        upgrade: false
+        version:
+            command: nginx -h
+            requirements:
+                - version: 1.13.4
+                  comparator: ge
+                - version: 1.14
+                  comparator: lt

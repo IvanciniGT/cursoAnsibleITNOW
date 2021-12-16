@@ -4,29 +4,40 @@
       dir: ../vars/
       files_matching: nginx.yaml
 
-    - name: Versiones actuales
-      debug:
-        msg: "{{ ansible_local.currentVersions }}"
-      failed_when: False
+- name: Versiones actuales
+  debug:
+    msg: "{{ ansible_local.currentVersions }}"
+  when: ansible_local.currentVersions is defined
 
-    - name: Versiones actuales Python
-      debug:
-        msg: "{{ ansible_local.currentVersionsPy }}"
-      failed_when: False
+- name: Versiones actuales Python
+  debug:
+    msg: "{{ ansible_local.currentVersionsPy }}"
+  when: ansible_local.currentVersionsPy is defined
 
-    - name: Versiones instaladas
-      debug:
-        msg: "{{ ansible_local.installedVersions }}"
-      failed_when: False
+- name: Versiones instaladas
+  debug:
+    msg: "{{ ansible_local.installedVersions }}"
+  when: ansible_local.installedVersions is defined
+  
+- name: Mirar si hubo cambios
+  set_fact: hay_cambios = False
+
+- name: Comprobar que las versiones instaladas siguen intactas
+  set_fact: hay_cambios = True
+  loop: 
+    - "{{ansible_local.installedVersions | zip (ansible_local.currentVersions) | list}}"
+  when: item.0  != item.1
+  ignore_errors: True
       
-    - name: A realizar la instalación
-      set_fact: hay_cambios = False
+- name: Mirar si tengo que instalar
+  set_fact: hay_instalar = False
 
-    - name: Comprobar que las versiones instaladas siguen intactas
-      set_fact: hay_cambios = True
-      loop: 
-        - "{{ansible_local.installedVersions | zip (ansible_local.currentVersions) | list}}"
-      when: item.0  != item.1
+- name: Comprobar que las versiones instaladas me valen
+  set_fact: hay_instalar = True
+  #loop: 
+  #  - "{{ansible_local.installedVersions | zip (ansible_local.currentVersions) | list}}"
+  when: {{ ansible_local.installedVersions.nginx is version('12.04', '>=') }}
+  ignore_errors: True
       
 #- name: Comprobar si el valor es el que esperamos
 

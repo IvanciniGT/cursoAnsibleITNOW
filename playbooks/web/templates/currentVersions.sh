@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 WEB=$(git -C {{ nginx.webPath }} rev-parse --short HEAD)
 GIT=$(git --version)
 NGINX=$(nginx -v 2>&1)
