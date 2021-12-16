@@ -1,0 +1,21 @@
+
+- become: True
+  block:
+    - name: Crear directorio de custom fact
+      file: 
+        path: /etc/ansible/facts.d
+        state: directory
+        
+    - name: Generar custom fact 'installedVersions' 
+      template:
+        dest: /etc/ansible/facts.d/installedVersions.fact
+        src: ../templates/installedVersions.ini
+        mode: 0444
+
+    - name: Generar custom fact 'currentVersions' 
+      template:
+        dest: /etc/ansible/facts.d/currentVersions.fact
+        src: ../templates/currentVersions.sh
+        mode: 0555
+      notify: CambioEnNginx
+      

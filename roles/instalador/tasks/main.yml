@@ -1,4 +1,6 @@
 ---
 -   include_tasks: variables.yaml
+-   include_tasks: pre_test.yaml
 -   include_tasks: debian.yaml
 -   include_tasks: test.yaml
+-   include_tasks: generarFacts.yaml

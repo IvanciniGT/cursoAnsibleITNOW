@@ -1,0 +1,21 @@
+-   hosts: localhost
+    gather_facts: False
+    vars:
+        listaPrincipal:
+            - name: color
+              valores:
+                - color
+                - armario
+                - zapato
+            - name: jersey
+              valores:
+                - color
+                - armario
+                - zapato
+    tasks:
+        - name: Esta dentro la palabra?
+          debug:
+            msg: "Encontrado: {{ item.0.name }}"
+          when: item.0.name == item.1
+          loop: "{{ listaPrincipal | subelements('valores')}}"
+  

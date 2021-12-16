@@ -3,6 +3,7 @@ instalador:
     git:
         version:
             command: git --version
+            requirements: [] 
         install:
             upgrade: true
             repo: 
@@ -12,13 +13,15 @@ instalador:
     curl:
         install:
             upgrade: false
-        #version:
+        version:
+            requirements: [] 
+
         #    command: curl --version
 
     nginx:
         upgrade: false
         version:
-            command: nginx -h
+            command: "nginx -v 2>&1"
             requirements:
                 - version: 1.13.4
                   comparator: ge

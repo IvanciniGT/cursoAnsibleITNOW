@@ -10,20 +10,16 @@
     endif %}
   changed_when: False
   loop: "{{ instalador | dict2items }}"
+  register: versionesInstaladas
   tags:
     - test
 
 - name: Comprobar si tengo todo instalado correctamente
-  shell: >
-    {% if item.value.version is defined
-          and item.value.version is not none
-          and item.value.version.command | default(none) 
-      %}{{ item.value.version.command }}{%
-    else 
-      %}{{ item.key }} --version{%
-    endif %}
-  changed_when: False
-  loop: "{{ instalador | dict2items }}"
+  assert: 
+    that:
+      - item.0.stdout | regex_search('[0-9]+.[0-9]+(.[0-9a-z]+)?') is version( item.1.version, item.1.comparator )
+  loop: >
+    {{ versionesInstaladas.results | subelements('item.value.version.requirements') }}
   tags:
     - test
     
