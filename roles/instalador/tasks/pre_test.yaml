@@ -17,8 +17,9 @@
 
 # Si hay facts previos: MIRO
 - when: 
-    - ansible_local.installedVersions is defined 
-    - ansible_local.currentVersions is defined
+    - hay_instalar is undefined
+    #- ansible_local.installedVersions is defined 
+    #- ansible_local.currentVersions is defined
   block:
     - name: Mirar si hubo cambios
       set_fact: 
@@ -44,6 +45,8 @@
       - name: Mirar si tengo que instalar
         set_fact: 
           hay_instalar: False
+      
+      # Si alguna version que tengo instalada realmente (current) no cumple con los requerimientos solicitados, instalo
       
 #      - name: Comprobar que las versiones instaladas me valen
 #        set_fact: 
