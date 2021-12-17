@@ -22,10 +22,46 @@ Example Playbook
 ----------------
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+-   hosts: all
+    gather_facts: True
+    vars:
+      instalador:
+        git:
+            version:
+                command: git --version
+                requirements: [] 
+            install:
+                upgrade: true
+                repo: 
+                    url: ppa:git-core/ppa
+                    key: ~
+    
+        curl:
+            install:
+                upgrade: false
+            version:
+                requirements: [] 
+    
+            #    command: curl --version
+    
+        nginx:
+            install:
+                repo:
+                    key: http://nginx.org/keys/nginx_signing.key
+                    url: deb http://nginx.org/packages/mainline/ubuntu/ $(lsb_release -cs)  nginx
+                upgrade: true
+            version:
+                command: "nginx -v 2>&1"
+                requirements:
+                    - version: 1.13.4
+                      comparator: ge
+                    - version: 1.16
+                      comparator: lt
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+    tasks:
+        - name: Instalar Software
+          include_role: 
+            name: instalador
 
 License
 -------
