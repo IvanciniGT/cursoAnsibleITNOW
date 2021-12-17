@@ -1,7 +1,7 @@
 ---
 - include_tasks: variables.yaml
 - include_tasks: pre_test.yaml
-- when: hay_instalar 
+- #when: hay_instalar 
   block:
     - include_tasks: debian.yaml
     - include_tasks: test.yaml

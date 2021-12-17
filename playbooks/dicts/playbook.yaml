@@ -1,0 +1,16 @@
+-   hosts: localhost
+    gather_facts: False
+    vars:
+        diccionario_original: 
+            clave1: valor1
+            clave2: 33
+            clave3: True
+    tasks:
+        - name: Modificar diccionario
+          set_fact:
+            instalar_herramienta: "{{ instalar_herramienta | default({}) | combine({ item.key: item.value }) }}"
+          loop: "{{ diccionario_original | dict2items }}"
+        
+        - name: Mostrar diccionario Despues
+          debug:
+            msg: "{{ instalar_herramienta }}"

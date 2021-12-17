@@ -16,8 +16,8 @@
     hay_instalar: True
 
 # Si hay facts previos: MIRO
-- #when: 
-  #  - hay_instalar is undefined
+- when: 
+    - hay_instalar is undefined
     #- ansible_local.installedVersions is defined 
     #- ansible_local.currentVersions is defined
   block:
@@ -34,12 +34,12 @@
       ignore_errors: True
       
     # Si no ha habido cambios, NO INSTALO
-    - name: Comprobar que las versiones instaladas me valen
-      set_fact: 
-        hay_instalar: False
-      when: not hay_cambios 
+    #- name: Comprobar que las versiones instaladas me valen
+      #set_fact: 
+      #  hay_instalar: False
+      #when: not hay_cambios 
       
-    - when: hay_cambios 
+    - #when: hay_cambios 
       block:
       
       - name: Mirar si tengo que instalar
@@ -51,6 +51,8 @@
       - name: Comprobar si tengo todo instalado correctamente
         set_fact: 
             hay_instalar: True
+            filtrar_instalacion: "{{ filtrar_instalacion | combine({ item.0.key: True }) }}"
+
         when:
           - not (ansible_local.currentVersions.VERSIONS[item.0.key] is version( item.1.version, item.1.comparator ))
         #debug: 

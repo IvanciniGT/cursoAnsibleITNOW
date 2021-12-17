@@ -23,6 +23,7 @@
         - item.value.install.repo is not none
         - item.value.install.repo.key is defined 
         - item.value.install.repo.key is not none
+        - filtrar_instalacion | length()  == 0 or filtrar_instalacion[item.key] is defined
     
       loop: "{{ instalador | dict2items }}"
                               # item.key < git
@@ -37,6 +38,7 @@
         - item.value.install.repo is not none
         - item.value.install.repo.url is defined 
         - item.value.install.repo.url is not none
+        - filtrar_instalacion | length()  == 0 or filtrar_instalacion[item.key] is defined
       register: repository_url   # Tendremos un dato que se llama results 
       changed_when: False
       loop: "{{ instalador | dict2items }}"
@@ -51,7 +53,9 @@
         repo: "{{ item.stdout | trim }}"
         state: present
         filename: "{{ item.item.key }}"
-      when: item.skipped is not defined or not item.skipped
+      when: 
+        - item.skipped is not defined or not item.skipped
+        - filtrar_instalacion | length()  == 0 or filtrar_instalacion[item.key] is defined
     
       loop: "{{ repository_url.results }}"
 
@@ -70,3 +74,6 @@
             endif %}
         update_cache: True
       loop: "{{ instalador | dict2items }}"
+      when:
+        - filtrar_instalacion | length()  == 0 or filtrar_instalacion[item.key] is defined
+

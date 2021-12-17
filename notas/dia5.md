@@ -47,3 +47,49 @@ ZIP:
 - - 2
   - b
 
+
+
+
+ALGORITMO INSTALADOR:
+    
+    Montamos una variable INSTALAR_HERRAMIENTAS {}
+    Montamos una variable HAY_CAMBIOS: False
+    Montamos una variable HAY_INSTALAR: False
+    
+    Recuperar facts
+        Si no existen: HAY_INSTALAR: True
+        En caso contrario:
+            Miro si hay cambios comparando los FACTS
+                Si no hay cambios: HAY_INSTALAR: False
+                Si hay cambios:
+                    Comprobamos que las versiones instaladas cumplan con los requerimientos
+                        Si alguna no cumple:
+                            HAY_INSTALAR: True
+                            INSTALAR_HERRAMIENTAS < La que no cumple con los requisitos
+    
+    Instalo SI HAY_INSTALAR
+        Que?
+            Si la herranienta está en INSTALAR_HERRAMIENTAS
+            o si INSTALAR_HERRAMIENTAS está vacia
+                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
