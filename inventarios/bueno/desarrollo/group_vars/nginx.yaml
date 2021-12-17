@@ -1,3 +1,7 @@
+ansible_connection: ssh
+ansible_user: root
+ansible_password: root
+
 instalador:
         git:
             version:
@@ -17,16 +21,9 @@ instalador:
     
             #    command: curl --version
     
-        nginx:
+        httpd:
             install:
-                repo:
-                    key: http://nginx.org/keys/nginx_signing.key
-                    url: deb http://nginx.org/packages/mainline/ubuntu/ $(lsb_release -cs)  nginx
-                upgrade: true
+                upgrade: false
             version:
-                command: "nginx -v 2>&1"
-                requirements:
-                    - version: 1.13.4
-                      comparator: ge
-                    - version: 1.16
-                      comparator: lt
+                command: "httpd -v 2>&1"
+                requirements: []

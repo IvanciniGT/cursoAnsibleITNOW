@@ -1,0 +1,29 @@
+ansible_connection: ssh
+ansible_user: root
+ansible_password: root
+
+instalador:
+        git:
+            version:
+                command: git --version
+                requirements: [] 
+            install:
+                upgrade: true
+                repo: 
+                    url: ppa:git-core/ppa
+                    key: ~
+    
+        curl:
+            install:
+                upgrade: false
+            version:
+                requirements: [] 
+    
+            #    command: curl --version
+    
+        httpd:
+            install:
+                upgrade: false
+            version:
+                command: "httpd -v 2>&1"
+                requirements: []

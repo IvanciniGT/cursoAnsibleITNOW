@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+    entorno_nginx1:
+        container_name: nginx1
+        image: rastasheep/ubuntu-sshd:14.04
+        
+    entorno_nginx2:
+        container_name: nginx2
+        image: rastasheep/ubuntu-sshd:14.04
+    
+    entorno_apache1:
+        container_name: apache1
+        image: rastasheep/ubuntu-sshd:14.04
+    
+    entorno_apache2:
+        container_name: apache2
+        image: rastasheep/ubuntu-sshd:14.04

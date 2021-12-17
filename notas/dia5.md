@@ -73,7 +73,19 @@ ALGORITMO INSTALADOR:
             o si INSTALAR_HERRAMIENTAS está vacia
                 
 
+Alguien en la empresa montó un ROLE: Instalador
+Playbook 
+2 grupos servidores
+    web servers
+        2 nginx 0,1
+    webservers
+        2 apache a,b
 
+Herramientas instaladas ... configuradas a nivel de grupo
+
+Playbook que haga ese trabajo
+
+contenedores
 
 
 

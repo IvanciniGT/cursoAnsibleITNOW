@@ -1,0 +1,8 @@
+
+[apache]
+apache2 ansible_host=172.18.0.4
+apache1 ansible_host=172.18.0.5
+
+[nginx]
+nginx2 ansible_host=172.18.0.3
+nginx1 ansible_host=172.18.0.2

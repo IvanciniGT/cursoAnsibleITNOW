@@ -1,0 +1,15 @@
+-   hosts: all
+
+    gather_facts: False
+    
+    tasks:
+        - name: gather min facts
+          setup:
+            gather_subset:
+              - '!all'
+              - '!min'
+              - 'local'
+              
+        - name: Instalar Software
+          include_role:
+            name: ../../roles/instalador
