@@ -1,0 +1,37 @@
+all:
+    hosts:
+        mipc:
+            ansible_connection: local
+            ansible_host: localhost
+            bbdd_puerto: 2345
+        mipc2:
+            ansible_connection: local
+            ansible_host: localhost
+            bbdd_puerto: 2345
+    children:
+        webservers:
+            hosts:
+                entorno1:
+                    ansible_connection: ssh
+                    ansible_user: root
+                    ansible_password: root
+                    ansible_host: 172.17.0.2
+                    
+                entorno2:
+                    ansible_connection: ssh
+                    ansible_user: root
+                    ansible_password: root
+                    ansible_host: 172.17.0.2
+            children:
+                nginx:
+                    hosts:
+                        nginx[1-6].prod:
+                            #[a:z]
+            vars:
+                # Esta variable por estar definida dentro del grupo webservers, aplica a:
+                    # Todos los host de webservers
+                    # Todos los host de todos los subgrupos dentro de webservers
+                variable7: valor17
+ungrouped:
+    mihost: 
+    
