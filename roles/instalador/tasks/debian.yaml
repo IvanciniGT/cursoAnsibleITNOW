@@ -60,13 +60,13 @@
         name: "{{ item.key }}"
         # Sintaxis IF en JINJA
         # {% if CONDICION %}VALOR SI SE CUMPLE{% else %}VALOR SI NO SE CUMPLE{% endif %}
-        state: >
+        state: >-
           {% if item.value.install is defined 
                 and item.value.install is not none 
                 and item.value.install.upgrade | default(False) 
           %}latest{% 
             else 
           %}present{%
-            endif %}"
+            endif %}
         update_cache: True
       loop: "{{ instalador | dict2items }}"

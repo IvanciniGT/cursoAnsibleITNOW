@@ -25,5 +25,5 @@ instalador:
             requirements:
                 - version: 1.13.4
                   comparator: ge
-                - version: 1.14
+                - version: 1.15
                   comparator: lt

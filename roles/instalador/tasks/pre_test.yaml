@@ -12,7 +12,8 @@
 
 # Si no hay facts previos: DECISION: INSTALO
 - when: ansible_local.installedVersions is not defined or ansible_local.currentVersions is not defined
-  set_fact: hay_instalar = True
+  set_fact: 
+    hay_instalar: True
 
 # Si hay facts previos: MIRO
 - when: 
@@ -20,37 +21,35 @@
     - ansible_local.currentVersions is defined
   block:
     - name: Mirar si hubo cambios
-      set_fact: hay_cambios = False
+      set_fact: 
+        hay_cambios: False
     
     - name: Comprobar que las versiones instaladas siguen intactas
-      set_fact: hay_cambios = True
+      set_fact: 
+        hay_cambios: True
       loop: 
-        - "{{ansible_local.installedVersions | zip (ansible_local.currentVersions) | list}}"
+        - "{{ansible_local.installedVersions.VERSIONS | dict2items | zip (ansible_local.currentVersions.VERSIONS| dict2items) | list}}"
       when: item.0  != item.1
       ignore_errors: True
       
     # Si no ha habido cambios, NO INSTALO
     - name: Comprobar que las versiones instaladas me valen
-      set_fact: hay_instalar = False
+      set_fact: 
+        hay_instalar: False
       when: not hay_cambios 
       
     - when: hay_cambios 
       block:
       
       - name: Mirar si tengo que instalar
-        set_fact: hay_instalar = False
+        set_fact: 
+          hay_instalar: False
       
-      - name: Comprobar que las versiones instaladas me valen
-        set_fact: hay_instalar = True
-        #loop: 
-        #  - "{{ansible_local.installedVersions | zip (ansible_local.currentVersions) | list}}"
-        when: {{ ansible_local.installedVersions.nginx is version('12.04', '>=') }}
-        ignore_errors: True
+#      - name: Comprobar que las versiones instaladas me valen
+#        set_fact: 
+#          hay_instalar: True
+#        #loop: 
+#        #  - "{{ansible_local.installedVersions | zip (ansible_local.currentVersions) | list}}"
+#        when: ansible_local.installedVersions.nginx is version('12.04', '>=')
+#        ignore_errors: True
       
-#- name: Comprobar si el valor es el que esperamos
-
-#- name: Version de la app
-
-#- name: Version de nginx
-
-#- name: Aplicar los tests

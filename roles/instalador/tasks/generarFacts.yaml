@@ -17,5 +17,3 @@
         dest: /etc/ansible/facts.d/currentVersions.fact
         src: ../templates/currentVersions.sh
         mode: 0555
-      notify: CambioEnNginx
-      

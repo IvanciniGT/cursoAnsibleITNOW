@@ -1,0 +1,6 @@
+-   hosts: localhost
+    gather_facts: True
+    tasks:
+        - name: Instalar Software
+          include_role: 
+            name: instalador
