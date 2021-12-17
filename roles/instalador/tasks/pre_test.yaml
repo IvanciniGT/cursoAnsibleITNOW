@@ -16,8 +16,8 @@
     hay_instalar: True
 
 # Si hay facts previos: MIRO
-- when: 
-    - hay_instalar is undefined
+- #when: 
+  #  - hay_instalar is undefined
     #- ansible_local.installedVersions is defined 
     #- ansible_local.currentVersions is defined
   block:
@@ -47,12 +47,23 @@
           hay_instalar: False
       
       # Si alguna version que tengo instalada realmente (current) no cumple con los requerimientos solicitados, instalo
-      
-#      - name: Comprobar que las versiones instaladas me valen
-#        set_fact: 
-#          hay_instalar: True
-#        #loop: 
-#        #  - "{{ansible_local.installedVersions | zip (ansible_local.currentVersions) | list}}"
-#        when: ansible_local.installedVersions.nginx is version('12.04', '>=')
-#        ignore_errors: True
-      
+          
+      - name: Comprobar si tengo todo instalado correctamente
+        set_fact: 
+            hay_instalar: True
+        when:
+          - not (ansible_local.currentVersions.VERSIONS[item.0.key] is version( item.1.version, item.1.comparator ))
+        #debug: 
+        #  msg: |
+        #    {{ item }}
+        #    {{ ansible_local.currentVersions.VERSIONS[item.0.key] }}
+        #    {{ item.1.version }}
+        #    {{ item.1.comparator }}
+        loop: >-
+          {{ instalador | dict2items 
+              | list 
+              | subelements ('value.version.requirements') 
+          }}
+    # ansible_local.currentVersions
+    # instalador
+#                
